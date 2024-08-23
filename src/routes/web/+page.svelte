@@ -78,6 +78,7 @@
 
 		@media screen and (width > 768px) {
 			padding-right: 6rem;
+			max-height: unset;
 		}
 
 		p {
