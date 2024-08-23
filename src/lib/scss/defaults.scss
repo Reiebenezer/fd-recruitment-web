@@ -1,0 +1,58 @@
+@use 'vars';
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+h1, h2, h3 {
+    font-family: var(--font-serif);
+    line-height: 1.1;
+}
+
+input, select, textarea, option, button {
+    font: inherit;
+    letter-spacing: inherit;
+    word-spacing: inherit;
+}
+
+button, a.button {
+    text-decoration: none;
+    
+    background-color: var(--light-shade);
+    
+    color: var(--brand);
+    border: 1px solid var(--brand);
+    border-radius: 4px;
+
+    padding: .25rem .5rem;
+    
+    font-size: small;
+    font-weight: bold;
+
+    cursor: pointer;
+    display: flex;
+
+    &:hover, &:focus {
+        background-color: var(--brand);
+        color: var(--light-shade);
+    }
+
+    &:disabled, &.disabled {
+        color: #a0a0a0;
+        background-color: #f0f0f0;
+        border-color: #a0a0a0;
+    }
+}
+
+input {
+    background-color: transparent;
+    border: none;
+    border-bottom: 1px solid var(--light-accent);
+
+    &::placeholder {
+        font-size: small;
+        opacity: .5;
+    }
+}

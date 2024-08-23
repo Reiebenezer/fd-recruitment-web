@@ -1,0 +1,18 @@
+:root {
+    --light-shade: #F3F6F5;
+    --dark-shade: #212337;
+    --darker-shade: #0F0F16;
+    
+    --dark-accent: #525D88;
+    --light-accent: #74A9CD;
+
+    --brand: #0E4EFF;
+
+    --font-serif: 'Recoleta', system-ui;
+    --font-sans: 'Rubik';
+
+    --shadow: 16px -2px #0005;
+
+    font-family: var(--font-sans);
+    line-height: 1.5;
+}
