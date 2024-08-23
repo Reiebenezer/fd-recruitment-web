@@ -73,6 +73,9 @@
 
 		max-width: 60ch;
 
+		overflow-y: auto;
+		max-height: 80%;
+
 		@media screen and (width > 768px) {
 			padding-right: 6rem;
 		}

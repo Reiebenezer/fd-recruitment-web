@@ -33,7 +33,7 @@
 <style lang="scss">
 	main {
 		display: grid;
-		height: 100vh;
+		height: 100svh;
 
 		img {
 			position: fixed;
