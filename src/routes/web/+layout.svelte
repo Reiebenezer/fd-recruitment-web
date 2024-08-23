@@ -16,8 +16,6 @@
 		if (image.complete) loaded = true;
 		else image.onload = () => (loaded = true);
 	}
-	
-	onMount(() => goto(localStorage.getItem('control-number') ? '/home' : '/'))
 </script>
 
 <svelte:head>

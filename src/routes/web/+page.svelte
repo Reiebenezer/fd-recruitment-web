@@ -6,7 +6,7 @@
 	import { quintOut } from 'svelte/easing';
 
 	function validate() {
-		goto('/home', { replaceState: true });
+		goto('/web/home', { replaceState: true });
 	}
 
 	const flyParams: FlyParams = {
