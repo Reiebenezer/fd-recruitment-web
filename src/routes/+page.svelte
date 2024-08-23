@@ -26,7 +26,7 @@
 <div class="bg">
 	<BgComponent />
 
-	<div class="content" in:fly={flyParams} out:fly={{ ...flyParams }}>
+	<div class="content" in:fly={flyParams} out:fly={{ ...flyParams, delay: 0 }}>
 		<Logo type="blue" />
 		<h1>Forum-Dimensions</h1>
 		<p>Dear FD hopeful,</p>
