@@ -62,7 +62,7 @@
 			return `<p>${p.trim()}</p>`;
 		});
 
-		return paragraphs.join('');
+		return paragraphs.join('\n');
 	}
 
 	function clickOutside(node: HTMLElement) {
