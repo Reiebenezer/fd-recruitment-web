@@ -36,8 +36,10 @@
 	}
 
 	function transformText(): string {
-		let paragraphs = text.split('\n');
-		paragraphs = paragraphs.map((p) => {
+		const paragraphs = text.split('\n');
+		const formattedParagraphs = paragraphs.map((p) => {
+			if (p.length === 0) return '';
+
 			p = p.replace(
 				/[𝗔𝗕𝗖𝗗𝗘𝗙𝗚𝗛𝗜𝗝𝗞𝗟𝗠𝗡𝗢𝗣𝗤𝗥𝗦𝗧𝗨𝗩𝗪𝗫𝗬𝗭𝗮𝗯𝗰𝗱𝗲𝗳𝗴𝗵𝗶𝗷𝗸𝗹𝗺𝗻𝗼𝗽𝗾𝗿𝘀𝘁𝘂𝘃𝘄𝘅𝘆𝘇𝟬𝟭𝟮𝟯𝟰𝟱𝟲𝟳𝟴𝟵].+[𝗔𝗕𝗖𝗗𝗘𝗙𝗚𝗛𝗜𝗝𝗞𝗟𝗠𝗡𝗢𝗣𝗤𝗥𝗦𝗧𝗨𝗩𝗪𝗫𝗬𝗭𝗮𝗯𝗰𝗱𝗲𝗳𝗴𝗵𝗶𝗷𝗸𝗹𝗺𝗻𝗼𝗽𝗾𝗿𝘀𝘁𝘂𝘃𝘄𝘅𝘆𝘇𝟬𝟭𝟮𝟯𝟰𝟱𝟲𝟳𝟴𝟵]/g,
 				(a) => '<strong>' + a.normalize('NFKD') + '</strong>'
@@ -62,7 +64,7 @@
 			return `<p>${p.trim()}</p>`;
 		});
 
-		return paragraphs.join('\n');
+		return formattedParagraphs.filter(p => p !== "<p></p>").join('\n');
 	}
 
 	function clickOutside(node: HTMLElement) {
