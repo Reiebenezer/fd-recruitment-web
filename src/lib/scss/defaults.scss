@@ -43,6 +43,12 @@ button, a.button {
         color: #a0a0a0;
         background-color: #f0f0f0;
         border-color: #a0a0a0;
+
+        cursor: not-allowed;
+    }
+
+    &.secondary {
+        border-color: var(--light-shade);
     }
 }
 
@@ -50,6 +56,8 @@ input {
     background-color: transparent;
     border: none;
     border-bottom: 1px solid var(--light-accent);
+
+    outline: none;
 
     &::placeholder {
         font-size: small;

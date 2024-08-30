@@ -2,6 +2,7 @@
 	import { browser } from '$app/environment';
 	import data from '$lib/assets/data.json';
 	import layout from '$lib/assets/Layouts.png';
+	import Modal from '$lib/svelte/modal.svelte';
 	import { quintOut } from 'svelte/easing';
 	import { fade, fly, type FlyParams } from 'svelte/transition';
 
@@ -14,6 +15,10 @@
 
 	let toastMessage = '';
 	let timeout: number;
+	let show = false;
+
+	let submissionLink = '';
+	let isSubmitting = false;
 
 	const flyParams: FlyParams = {
 		y: 100,
@@ -26,13 +31,19 @@
 		timeout = setTimeout(() => (toastMessage = ''), 3000);
 	}
 
-	$: if (browser) document.body.style.overflow = text ? 'hidden' : '';
+	$: if (browser) {
+		document.body.style.overflow = text ? 'hidden' : '';
+	}
+
+	$: if (!show) text = '';
 
 	function set(__name: string, __text: string, __datePosted: string, __images: string) {
 		name = __name;
 		text = __text;
 		datePosted = __datePosted;
 		imagePackage = __images;
+
+		show = true;
 	}
 
 	function transformText(): string {
@@ -64,15 +75,7 @@
 			return `<p>${p.trim()}</p>`;
 		});
 
-		return formattedParagraphs.filter(p => p !== "<p></p>").join('\n');
-	}
-
-	function clickOutside(node: HTMLElement) {
-		node.addEventListener('click', (e) => {
-			if ((e.target as HTMLElement).closest('.content-window') === null) {
-				text = '';
-			}
-		});
+		return formattedParagraphs.filter((p) => p !== '<p></p>').join('\n');
 	}
 
 	function copyHtml() {
@@ -83,6 +86,22 @@
 
 	function copyText() {
 		navigator.clipboard.writeText(text).then(() => (toastMessage = 'Copied raw text to clipboard'));
+	}
+
+	function submit() {
+		fetch('https://forumdimensions.org/recruitment/web', {
+			method: 'POST',
+			// mode: 'no-cors',
+			body: JSON.stringify({
+				control_number: number?.toUpperCase().replace('FD-', ''),
+				link: submissionLink
+			})
+		}).then((res) => {
+			if (res.status === 200) {
+				localStorage.clear();
+				window.location.reload();
+			}
+		});
 	}
 </script>
 
@@ -126,36 +145,29 @@
 					{/each}
 				</div>
 
-				{#if text}
-					<div class="dialog" transition:fade use:clickOutside>
-						<div class="content-window" transition:fly={flyParams}>
-							<button class="close" on:click={() => (text = '')}
-								><i class="ph-bold ph-x"></i></button
-							>
-							<h1>{name}</h1>
+				<div class="sv-dialog">
+					<Modal bind:show>
+						<h1>{name}</h1>
 
-							<div class="head">
-								<small>CONTENT</small>
-								<button title="Copy Raw HTML" on:click={copyHtml}
-									><i class="ph-bold ph-file-html"></i></button
-								>
-								<button title="Copy Raw Text (Formatted)" on:click={copyText}
-									><i class="ph-bold ph-file-txt"></i></button
-								>
-							</div>
-							<div class="text">
-								{@html transformText()}
-							</div>
-							<hr />
-							<div class="cta">
-								<a href="/links/{imagePackage}" class="button" download={name}>Download Image/s</a>
-								<small
-									>NOTE: Articles containing multiple images are zipped before downloaded.</small
-								>
-							</div>
+						<div class="head">
+							<small>CONTENT</small>
+							<button title="Copy Raw HTML" on:click={copyHtml}
+								><i class="ph-bold ph-file-html"></i></button
+							>
+							<button title="Copy Raw Text (Formatted)" on:click={copyText}
+								><i class="ph-bold ph-file-txt"></i></button
+							>
 						</div>
-					</div>
-				{/if}
+						<div class="text">
+							{@html transformText()}
+						</div>
+						<hr />
+						<div class="cta">
+							<a href="/links/{imagePackage}" class="button" download={name}>Download Image/s</a>
+							<small>NOTE: Articles containing multiple images are zipped before downloaded.</small>
+						</div>
+					</Modal>
+				</div>
 			</div>
 			<div class="frame-specs">
 				<h2>FRAME SIZE SPECIFICATIONS*</h2>
@@ -165,14 +177,42 @@
 			<div class="guidelines">
 				<h2>DESIGN GUIDELINES</h2>
 				<p>
-					You can use <a href="https://figma.com" target="_blank">Figma</a>, <a href="https://canva.com" target="_blank">Canva</a>, or any design software in creating your UI. You are also allowed
-					to use third-party assets for your submission, but proper credit must be observed.
+					You can use <a href="https://figma.com" target="_blank">Figma</a>,
+					<a href="https://canva.com" target="_blank">Canva</a>, or any design software in creating
+					your UI. You are also allowed to use third-party assets for your submission, but proper
+					credit must be observed.
 				</p>
 				<p>
-					<strong>WARNING:</strong> Design templates are not allowed. You must start your work from scratch.
+					<strong class="err">WARNING:</strong> Design templates are not allowed. You must start your
+					work from scratch.
 				</p>
+
+				<form on:submit|preventDefault={() => (isSubmitting = true)}>
+					<strong>Submit your entries here: </strong>
+					<input
+						type="text"
+						placeholder="Link to the design file"
+						bind:value={submissionLink}
+						required
+					/>
+					<button disabled={submissionLink === ''}>Submit</button>
+				</form>
 			</div>
 		</div>
+		<Modal bind:show={isSubmitting}>
+			<div class="form">
+				<h1>Confirm Submission</h1>
+				<p>
+					Are you sure you want to submit this link? You cannot make any changes to your submission
+					once you press "Confirm and send".
+				</p>
+
+				<div class="cta">
+					<button class="secondary" on:click={() => (isSubmitting = false)}>Cancel</button>
+					<button on:click={submit}>Confirm and Send</button>
+				</div>
+			</div>
+		</Modal>
 	{/if}
 </div>
 
@@ -215,8 +255,19 @@
 		}
 
 		.guidelines {
-			strong {
+			strong.err {
 				color: rgb(212, 47, 53);
+			}
+
+			form {
+				display: flex;
+				gap: 1rem;
+
+				margin-top: 1rem;
+
+				input {
+					flex-grow: 1;
+				}
 			}
 		}
 
@@ -298,70 +349,75 @@
 	}
 
 	// Dialog
-	.dialog {
-		--padding-x: 10vw;
-		--padding-y: 10vh;
+	.sv-dialog {
+		.head {
+			margin-block: 2rem 0.5rem;
+			display: flex;
+			align-items: end;
 
-		position: fixed;
-		inset: 0;
+			gap: 0.5rem;
 
-		padding: var(--padding-y) var(--padding-x);
-
-		backdrop-filter: blur(10px) brightness(0.6);
-		-webkit-backdrop-filter: blur(10px) brightness(0.6);
-
-		.close {
-			font-size: 1rem;
-			justify-self: right;
+			small {
+				line-height: 1;
+				flex-grow: 1;
+				font-weight: bold;
+			}
 		}
 
-		.content-window {
+		.text {
+			display: flex;
+			padding: 1rem;
+			overflow: hidden auto;
+			flex-direction: column;
+			gap: 1rem;
+
+			background-color: color-mix(in srgb, var(--light-accent) 10%, var(--light-shade));
+
+			&::-webkit-scrollbar {
+				display: none;
+			}
+		}
+
+		.cta {
 			display: grid;
+			align-items: center;
+			
+			a {
+				width: fit-content;
+				text-wrap: nowrap;
+			}
 
-			background-color: var(--light-shade);
-			border-radius: 1rem;
-
-			overflow: hidden;
-			height: 100%;
-
-			padding: 2rem;
-
-			.head {
-				margin-block: 2rem 0.5rem;
+			@media screen and (width > 768px) {
 				display: flex;
-				align-items: end;
-
-				gap: 0.5rem;
-
-				small {
-					line-height: 1;
-					flex-grow: 1;
-					font-weight: bold;
-				}
-			}
-
-			.text,
-			.cta {
-				display: flex;
-			}
-
-			.text {
-				padding: 1rem;
-				overflow: hidden auto;
-				flex-direction: column;
-				gap: 1rem;
-
-				background-color: color-mix(in srgb, var(--light-accent) 10%, var(--light-shade));
-
-				&::-webkit-scrollbar {
-					display: none;
-				}
-			}
-
-			.cta {
-				padding: 0.75rem;
-				margin-top: 1rem;
 				justify-content: space-between;
+			}
+
+			gap: .5rem;
+		}
+	}
+
+	.cta {
+		display: flex;
+		padding: 0.75rem;
+		margin-top: 1rem;
+	}
+
+	.form {
+		width: min(28rem, 100%);
+		display: grid;
+		gap: 1rem;
+
+		align-self: center;
+		text-align: center;
+
+		.cta {
+			justify-content: space-around;
+			padding: 0;
+
+			gap: 0.5rem;
+
+			button {
+				padding-inline: 1rem;
 			}
 		}
 	}
