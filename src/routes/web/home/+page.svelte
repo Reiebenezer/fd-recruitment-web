@@ -260,13 +260,20 @@
 			}
 
 			form {
-				display: flex;
+				display: grid;
 				gap: 1rem;
-
 				margin-top: 1rem;
+
+				@media screen and (width > 768px) {
+					display: flex;
+				}
 
 				input {
 					flex-grow: 1;
+				}
+
+				button {
+					width: fit-content
 				}
 			}
 		}
@@ -381,7 +388,7 @@
 		.cta {
 			display: grid;
 			align-items: center;
-			
+
 			a {
 				width: fit-content;
 				text-wrap: nowrap;
@@ -392,7 +399,7 @@
 				justify-content: space-between;
 			}
 
-			gap: .5rem;
+			gap: 0.5rem;
 		}
 	}
 
