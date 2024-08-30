@@ -89,15 +89,11 @@
 	}
 
 	function submit() {
-		console.log(number?.toUpperCase().replace('&#8209;', '-').replace('FD-', ''));
-		
-		return;
-
 		fetch('https://forumdimensions.org/recruitment/web', {
 			method: 'POST',
 			// mode: 'no-cors',
 			body: JSON.stringify({
-				control_number: number?.toUpperCase().replace('&#8209;', '-').replace('FD-', ''),
+				control_number: number?.toUpperCase().replace('&#8209;', '-'),
 				link: submissionLink
 			})
 		}).then((res) => {
