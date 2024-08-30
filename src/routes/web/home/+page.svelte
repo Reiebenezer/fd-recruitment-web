@@ -93,7 +93,7 @@
 			method: 'POST',
 			// mode: 'no-cors',
 			body: JSON.stringify({
-				control_number: number?.toUpperCase(),
+				control_number: number?.toUpperCase().replace('&#8209;', '-').replace('FD-', ''),
 				link: submissionLink
 			})
 		}).then((res) => {
