@@ -1,6 +1,6 @@
 <script lang="ts">
-    import logo from '$lib/assets/logo.svg';
-    import logoblue from '$lib/assets/logo_blue.svg';
+    import logo from '$lib/assets/logo_white.png';
+    import logoblue from '$lib/assets/logo.png';
 
     export let type: 'blue' | 'white' = 'white';
 </script>

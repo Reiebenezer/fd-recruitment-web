@@ -5,7 +5,7 @@
 	import '@phosphor-icons/web/bold';
 	import '$lib/scss/defaults.scss';
 
-	import logo from '$lib/assets/logo.svg';
+	import logo from '$lib/assets/logo.png';
 	import bg from '$lib/assets/bg.jpg';
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
