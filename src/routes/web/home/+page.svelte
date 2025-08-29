@@ -187,8 +187,8 @@
 					work from scratch.
 				</p>
 
-				<form on:submit|preventDefault={() => (isSubmitting = true)}>
-					<strong>Submit your entries here: </strong>
+				<!-- <form on:submit|preventDefault={() => (isSubmitting = true)}>
+					<strong>Send the link to your design here: </strong>
 					<input
 						type="text"
 						placeholder="Link to the design file"
@@ -196,7 +196,12 @@
 						required
 					/>
 					<button disabled={submissionLink === ''}>Submit</button>
+				</form> -->
+				<form>
+					<strong>Send your entries to the following messenger account:</strong>
+					<a href="https://www.facebook.com/reiizzy.duhina/" target="_blank">https://www.facebook.com/reiizzy.duhina/</a>
 				</form>
+
 			</div>
 		</div>
 		<Modal bind:show={isSubmitting}>
